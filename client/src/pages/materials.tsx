@@ -83,8 +83,8 @@ export default function Materials() {
 
   const filteredMaterials = materials?.filter((material: Material) => {
     const matchesSearch = material.title.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesBoard = !selectedBoard || material.boardId.toString() === selectedBoard;
-    const matchesSubject = !selectedSubject || material.subjectId.toString() === selectedSubject;
+    const matchesBoard = selectedBoard === "all" || !selectedBoard || material.boardId.toString() === selectedBoard;
+    const matchesSubject = selectedSubject === "all" || !selectedSubject || material.subjectId.toString() === selectedSubject;
     return matchesSearch && matchesBoard && matchesSubject;
   }) || [];
 
@@ -162,7 +162,7 @@ export default function Materials() {
                   <SelectValue placeholder="All Boards" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Boards</SelectItem>
+                  <SelectItem value="all">All Boards</SelectItem>
                   {boards?.map((board: Board) => (
                     <SelectItem key={board.id} value={board.id.toString()}>
                       {board.name}
@@ -175,7 +175,7 @@ export default function Materials() {
                   <SelectValue placeholder="All Subjects" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Subjects</SelectItem>
+                  <SelectItem value="all">All Subjects</SelectItem>
                   {subjects?.map((subject: Subject) => (
                     <SelectItem key={subject.id} value={subject.id.toString()}>
                       {subject.name}
