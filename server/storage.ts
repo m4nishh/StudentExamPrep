@@ -7,6 +7,8 @@ import {
   type Note, type InsertNote,
   type PyqPaper, type InsertPyqPaper
 } from "@shared/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 
 export interface IStorage {
   // User methods
@@ -425,4 +427,239 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export class DatabaseStorage implements IStorage {
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
+    return user;
+  }
+
+  async getAllBoards(): Promise<Board[]> {
+    return await db.select().from(boards);
+  }
+
+  async getBoard(id: number): Promise<Board | undefined> {
+    const [board] = await db.select().from(boards).where(eq(boards.id, id));
+    return board || undefined;
+  }
+
+  async createBoard(insertBoard: InsertBoard): Promise<Board> {
+    const [board] = await db
+      .insert(boards)
+      .values(insertBoard)
+      .returning();
+    return board;
+  }
+
+  async updateBoard(id: number, boardUpdate: Partial<InsertBoard>): Promise<Board | undefined> {
+    const [board] = await db
+      .update(boards)
+      .set(boardUpdate)
+      .where(eq(boards.id, id))
+      .returning();
+    return board || undefined;
+  }
+
+  async deleteBoard(id: number): Promise<boolean> {
+    const result = await db.delete(boards).where(eq(boards.id, id));
+    return result.rowCount > 0;
+  }
+
+  async getAllSubjects(): Promise<Subject[]> {
+    return await db.select().from(subjects);
+  }
+
+  async getSubjectsByBoard(boardId: number): Promise<Subject[]> {
+    return await db.select().from(subjects).where(eq(subjects.boardId, boardId));
+  }
+
+  async getSubject(id: number): Promise<Subject | undefined> {
+    const [subject] = await db.select().from(subjects).where(eq(subjects.id, id));
+    return subject || undefined;
+  }
+
+  async createSubject(insertSubject: InsertSubject): Promise<Subject> {
+    const [subject] = await db
+      .insert(subjects)
+      .values(insertSubject)
+      .returning();
+    return subject;
+  }
+
+  async updateSubject(id: number, subjectUpdate: Partial<InsertSubject>): Promise<Subject | undefined> {
+    const [subject] = await db
+      .update(subjects)
+      .set(subjectUpdate)
+      .where(eq(subjects.id, id))
+      .returning();
+    return subject || undefined;
+  }
+
+  async deleteSubject(id: number): Promise<boolean> {
+    const result = await db.delete(subjects).where(eq(subjects.id, id));
+    return result.rowCount > 0;
+  }
+
+  async getAllMaterials(): Promise<Material[]> {
+    return await db.select().from(materials);
+  }
+
+  async getMaterialsBySubject(subjectId: number): Promise<Material[]> {
+    return await db.select().from(materials).where(eq(materials.subjectId, subjectId));
+  }
+
+  async getMaterialsByBoard(boardId: number): Promise<Material[]> {
+    return await db.select().from(materials).where(eq(materials.boardId, boardId));
+  }
+
+  async getMaterial(id: number): Promise<Material | undefined> {
+    const [material] = await db.select().from(materials).where(eq(materials.id, id));
+    return material || undefined;
+  }
+
+  async createMaterial(insertMaterial: InsertMaterial): Promise<Material> {
+    const [material] = await db
+      .insert(materials)
+      .values(insertMaterial)
+      .returning();
+    return material;
+  }
+
+  async updateMaterial(id: number, materialUpdate: Partial<InsertMaterial>): Promise<Material | undefined> {
+    const [material] = await db
+      .update(materials)
+      .set(materialUpdate)
+      .where(eq(materials.id, id))
+      .returning();
+    return material || undefined;
+  }
+
+  async deleteMaterial(id: number): Promise<boolean> {
+    const result = await db.delete(materials).where(eq(materials.id, id));
+    return result.rowCount > 0;
+  }
+
+  async getAllNotes(): Promise<Note[]> {
+    return await db.select().from(notes);
+  }
+
+  async getNotesBySubject(subjectId: number): Promise<Note[]> {
+    return await db.select().from(notes).where(eq(notes.subjectId, subjectId));
+  }
+
+  async getNotesByBoard(boardId: number): Promise<Note[]> {
+    return await db.select().from(notes).where(eq(notes.boardId, boardId));
+  }
+
+  async getNote(id: number): Promise<Note | undefined> {
+    const [note] = await db.select().from(notes).where(eq(notes.id, id));
+    return note || undefined;
+  }
+
+  async createNote(insertNote: InsertNote): Promise<Note> {
+    const [note] = await db
+      .insert(notes)
+      .values(insertNote)
+      .returning();
+    return note;
+  }
+
+  async updateNote(id: number, noteUpdate: Partial<InsertNote>): Promise<Note | undefined> {
+    const [note] = await db
+      .update(notes)
+      .set(noteUpdate)
+      .where(eq(notes.id, id))
+      .returning();
+    return note || undefined;
+  }
+
+  async deleteNote(id: number): Promise<boolean> {
+    const result = await db.delete(notes).where(eq(notes.id, id));
+    return result.rowCount > 0;
+  }
+
+  async incrementNoteViews(id: number): Promise<void> {
+    await db
+      .update(notes)
+      .set({ views: notes.views + 1 })
+      .where(eq(notes.id, id));
+  }
+
+  async getAllPyqPapers(): Promise<PyqPaper[]> {
+    return await db.select().from(pyqPapers);
+  }
+
+  async getPyqPapersBySubject(subjectId: number): Promise<PyqPaper[]> {
+    return await db.select().from(pyqPapers).where(eq(pyqPapers.subjectId, subjectId));
+  }
+
+  async getPyqPapersByBoard(boardId: number): Promise<PyqPaper[]> {
+    return await db.select().from(pyqPapers).where(eq(pyqPapers.boardId, boardId));
+  }
+
+  async getPyqPapersByYear(year: number): Promise<PyqPaper[]> {
+    return await db.select().from(pyqPapers).where(eq(pyqPapers.year, year));
+  }
+
+  async getPyqPaper(id: number): Promise<PyqPaper | undefined> {
+    const [paper] = await db.select().from(pyqPapers).where(eq(pyqPapers.id, id));
+    return paper || undefined;
+  }
+
+  async createPyqPaper(insertPyqPaper: InsertPyqPaper): Promise<PyqPaper> {
+    const [paper] = await db
+      .insert(pyqPapers)
+      .values(insertPyqPaper)
+      .returning();
+    return paper;
+  }
+
+  async updatePyqPaper(id: number, pyqPaperUpdate: Partial<InsertPyqPaper>): Promise<PyqPaper | undefined> {
+    const [paper] = await db
+      .update(pyqPapers)
+      .set(pyqPaperUpdate)
+      .where(eq(pyqPapers.id, id))
+      .returning();
+    return paper || undefined;
+  }
+
+  async deletePyqPaper(id: number): Promise<boolean> {
+    const result = await db.delete(pyqPapers).where(eq(pyqPapers.id, id));
+    return result.rowCount > 0;
+  }
+
+  async getDashboardStats(): Promise<{
+    totalStudents: number;
+    totalBoards: number;
+    totalMaterials: number;
+    totalPyqPapers: number;
+  }> {
+    const [usersCount, boardsCount, materialsCount, pyqCount] = await Promise.all([
+      db.select().from(users),
+      db.select().from(boards),
+      db.select().from(materials),
+      db.select().from(pyqPapers)
+    ]);
+
+    return {
+      totalStudents: usersCount.length,
+      totalBoards: boardsCount.length,
+      totalMaterials: materialsCount.length,
+      totalPyqPapers: pyqCount.length,
+    };
+  }
+}
+
+export const storage = new DatabaseStorage();
