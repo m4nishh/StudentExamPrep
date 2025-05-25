@@ -31,10 +31,10 @@ export default function Notes() {
 
   const deleteNoteMutation = useMutation({
     mutationFn: async (id: number) => {
-      await apiRequest("DELETE", `/api/notes/${id}`);
+      await apiRequest("DELETE", `/api/board-exam/note/${id}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/notes"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/board-exam/note"] });
       toast({
         title: "Success",
         description: "Note deleted successfully",
