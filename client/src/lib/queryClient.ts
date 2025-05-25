@@ -12,7 +12,7 @@ export async function apiRequest(
   url: string,
   data?: unknown | undefined,
 ): Promise<Response> {
-  const apiUrl = url.startsWith('http') ? url : `http://localhost:8080${url}`;
+  const apiUrl = url.startsWith('http') ? url : `https://70af-160-191-74-252.ngrok-free.app${url}`;
   const res = await fetch(apiUrl, {
     method,
     headers: data ? { "Content-Type": "application/json" } : {},
@@ -31,7 +31,7 @@ export const getQueryFn: <T>(options: {
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
     const url = queryKey[0] as string;
-    const apiUrl = url.startsWith('http') ? url : `http://localhost:8080${url}`;
+    const apiUrl = url.startsWith('http') ? url : `https://70af-160-191-74-252.ngrok-free.app${url}`;
     const res = await fetch(apiUrl, {
       credentials: "include",
     });
