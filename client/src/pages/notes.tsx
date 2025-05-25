@@ -18,15 +18,15 @@ export default function Notes() {
   const { toast } = useToast();
 
   const { data: notes, isLoading } = useQuery({
-    queryKey: ["/api/notes"],
+    queryKey: ["/api/board-exam/note"],
   });
 
   const { data: boards } = useQuery({
-    queryKey: ["/api/boards"],
+    queryKey: ["/api/board-exam/subjects"],
   });
 
   const { data: subjects } = useQuery({
-    queryKey: ["/api/subjects"],
+    queryKey: ["/api/board-exam/subjects"],
   });
 
   const deleteNoteMutation = useMutation({

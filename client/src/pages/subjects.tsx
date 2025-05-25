@@ -16,19 +16,19 @@ export default function Subjects() {
   const { toast } = useToast();
 
   const { data: subjects, isLoading: subjectsLoading } = useQuery({
-    queryKey: ["/api/subjects"],
+    queryKey: ["/api/board-exam/subjects"],
   });
 
   const { data: boards } = useQuery({
-    queryKey: ["/api/boards"],
+    queryKey: ["/api/board-exam/subjects"],
   });
 
   const deleteSubjectMutation = useMutation({
     mutationFn: async (id: number) => {
-      await apiRequest("DELETE", `/api/subjects/${id}`);
+      await apiRequest("DELETE", `/api/board-exam/subjects/${id}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/subjects"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/board-exam/subjects"] });
       toast({
         title: "Success",
         description: "Subject deleted successfully",
