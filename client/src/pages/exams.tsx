@@ -114,7 +114,7 @@ export default function SupportedExams() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
               <Input
                 type="text"
-                placeholder="Search boards..."
+                placeholder="Search supported exams..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
@@ -152,18 +152,18 @@ export default function SupportedExams() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-slate-200">
-                {filteredBoards.map((board: Board) => (
-                  <tr key={board.id} className="hover:bg-slate-50">
+                {filteredExams.map((exam: Board) => (
+                  <tr key={exam.id} className="hover:bg-slate-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
                           <span className="text-blue-600 font-semibold text-sm">
-                            {board.name.charAt(0)}
+                            {exam.name.charAt(0)}
                           </span>
                         </div>
                         <div>
-                          <div className="text-sm font-medium text-slate-900">{board.name}</div>
-                          <div className="text-sm text-slate-500">{board.description}</div>
+                          <div className="text-sm font-medium text-slate-900">{exam.name}</div>
+                          <div className="text-sm text-slate-500">{exam.description}</div>
                         </div>
                       </div>
                     </td>
