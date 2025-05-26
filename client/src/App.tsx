@@ -6,7 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Sidebar from "@/components/layout/sidebar";
 import Header from "@/components/layout/header";
 import Dashboard from "@/pages/dashboard";
-import Boards from "@/pages/boards";
+import SupportedExams from "@/pages/exams";
 import Subjects from "@/pages/subjects";
 import Materials from "@/pages/materials";
 import Notes from "@/pages/notes";
@@ -22,7 +22,7 @@ function Router() {
         <div className="flex-1 overflow-auto p-6">
           <Switch>
             <Route path="/" component={Dashboard} />
-            <Route path="/boards" component={Boards} />
+            <Route path="/exams" component={SupportedExams} />
             <Route path="/subjects" component={Subjects} />
             <Route path="/materials" component={Materials} />
             <Route path="/notes" component={Notes} />

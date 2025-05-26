@@ -20,8 +20,8 @@ const mainNavItems = [
     icon: LayoutDashboard,
   },
   {
-    title: "Boards",
-    href: "/boards",
+    title: "Supported Exams",
+    href: "/exams",
     icon: ClipboardList,
   },
   {

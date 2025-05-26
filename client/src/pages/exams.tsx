@@ -11,49 +11,49 @@ import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import type { Board } from "@shared/schema";
 
-export default function Boards() {
+export default function SupportedExams() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingBoard, setEditingBoard] = useState<Board | null>(null);
+  const [editingExam, setEditingExam] = useState<Board | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const { toast } = useToast();
 
-  const { data: boards, isLoading } = useQuery({
-    queryKey: ["/api/boards"],
+  const { data: exams, isLoading } = useQuery({
+    queryKey: ["/api/exams"],
   });
 
-  const deleteBoardMutation = useMutation({
+  const deleteExamMutation = useMutation({
     mutationFn: async (id: number) => {
-      await apiRequest("DELETE", `/api/boards/${id}`);
+      await apiRequest("DELETE", `/api/exams/${id}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/boards"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/exams"] });
       toast({
         title: "Success",
-        description: "Board deleted successfully",
+        description: "Supported exam deleted successfully",
       });
     },
     onError: () => {
       toast({
         title: "Error",
-        description: "Failed to delete board",
+        description: "Failed to delete supported exam",
         variant: "destructive",
       });
     },
   });
 
-  const filteredBoards = boards?.filter((board: Board) =>
-    board.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    board.description?.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredExams = exams?.filter((exam: Board) =>
+    exam.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    exam.description?.toLowerCase().includes(searchTerm.toLowerCase())
   ) || [];
 
-  const handleEdit = (board: Board) => {
-    setEditingBoard(board);
+  const handleEdit = (exam: Board) => {
+    setEditingExam(exam);
     setIsModalOpen(true);
   };
 
   const handleDelete = (id: number) => {
-    if (confirm("Are you sure you want to delete this board?")) {
-      deleteBoardMutation.mutate(id);
+    if (confirm("Are you sure you want to delete this supported exam?")) {
+      deleteExamMutation.mutate(id);
     }
   };
 
@@ -91,18 +91,18 @@ export default function Boards() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-primary">Board Management</h2>
-          <p className="text-slate-600">Manage educational boards and their configurations</p>
+          <h2 className="text-2xl font-bold text-primary">Supported Exams Management</h2>
+          <p className="text-slate-600">Manage supported examinations and their categories</p>
         </div>
         <Button 
           onClick={() => {
-            setEditingBoard(null);
+            setEditingExam(null);
             setIsModalOpen(true);
           }}
           className="bg-accent text-white hover:bg-accent/90"
         >
           <Plus className="w-4 h-4 mr-2" />
-          Add New Board
+          Add New Exam
         </Button>
       </div>
 
