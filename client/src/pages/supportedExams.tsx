@@ -5,21 +5,28 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { BoardModal } from "@/components/modals/board-modal";
+import { ExamModal } from "@/components/modals/supportedExam-modal";
 import { apiRequest } from "@/lib/queryClient";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import type { Board } from "@shared/schema";
+import type { SupportedExam } from "@shared/schema";
 
 export default function SupportedExams() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingExam, setEditingExam] = useState<Board | null>(null);
+  const [editingExam, setEditingExam] = useState<SupportedExam | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const { toast } = useToast();
 
-  const { data: exams, isLoading } = useQuery({
-    queryKey: ["/api/exams"],
+  const { data, isLoading } = useQuery({
+    queryKey: ["/api/exams/all-supported-type"],
+    queryFn: async () => {
+      const response = await apiRequest("GET", "/api/exams/all-supported-type");
+      const result = await response.json();
+      return Array.isArray(result.data) ? result.data : [];
+    }
   });
+  
+  const SupportedExam = data || [];
 
   const deleteExamMutation = useMutation({
     mutationFn: async (id: number) => {
@@ -41,12 +48,13 @@ export default function SupportedExams() {
     },
   });
 
-  const filteredExams = exams?.filter((exam: Board) =>
-    exam.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    exam.description?.toLowerCase().includes(searchTerm.toLowerCase())
-  ) || [];
+  const filteredExams = searchTerm
+    ? SupportedExam?.filter((exam: SupportedExam) =>
+        exam.examName?.toLowerCase().includes(searchTerm.toLowerCase())
+      ) || []
+    : SupportedExam;
 
-  const handleEdit = (exam: Board) => {
+  const handleEdit = (exam: SupportedExam) => {
     setEditingExam(exam);
     setIsModalOpen(true);
   };
@@ -138,10 +146,10 @@ export default function SupportedExams() {
               <thead className="bg-slate-50 border-b border-slate-200">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                    Board Name
+                    Exam Name
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                    Type
+                    Thumbnail
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
                     Status
@@ -152,29 +160,35 @@ export default function SupportedExams() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-slate-200">
-                {filteredExams.map((exam: Board) => (
+                {filteredExams.map((exam: SupportedExam) => (
                   <tr key={exam.id} className="hover:bg-slate-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
                           <span className="text-blue-600 font-semibold text-sm">
-                            {exam.name.charAt(0)}
+                            {exam.examName.charAt(0).toUpperCase()}
                           </span>
                         </div>
                         <div>
-                          <div className="text-sm font-medium text-slate-900">{exam.name}</div>
-                          <div className="text-sm text-slate-500">{exam.description}</div>
+                          <div className="text-sm font-medium text-slate-900">{exam.examName}</div>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <Badge className={getTypeColor(board.type)}>
-                        {board.type.charAt(0).toUpperCase() + board.type.slice(1)}
-                      </Badge>
+                      {exam.thumbnail ? (
+                        <img
+                          src={exam.thumbnail}
+                          alt={exam.examName}
+                          className="w-12 h-12 object-cover rounded-lg"
+                        />
+                      ) : (
+                        <div className="w-12 h-12 bg-slate-200 rounded-lg" />
+                      )}
                     </td>
+                    
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <Badge className={board.isActive ? "bg-emerald-100 text-emerald-800" : "bg-red-100 text-red-800"}>
-                        {board.isActive ? "Active" : "Inactive"}
+                      <Badge className={`text-xs ${getTypeColor(exam.status)}`}>
+                        {exam.status}
                       </Badge>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -182,7 +196,7 @@ export default function SupportedExams() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => handleEdit(board)}
+                          onClick={() => handleEdit(exam)}
                         >
                           <Edit className="w-4 h-4" />
                         </Button>
@@ -192,7 +206,7 @@ export default function SupportedExams() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => handleDelete(board.id)}
+                          onClick={() => handleDelete(exam.id)}
                           className="text-red-400 hover:text-red-600"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -207,13 +221,13 @@ export default function SupportedExams() {
         </CardContent>
       </Card>
 
-      <BoardModal
+      <ExamModal
         isOpen={isModalOpen}
         onClose={() => {
           setIsModalOpen(false);
-          setEditingBoard(null);
+         // setEditingBoard(null);
         }}
-        board={editingBoard}
+        //board={editingBoard}
       />
     </div>
   );

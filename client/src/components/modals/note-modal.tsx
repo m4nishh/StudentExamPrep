@@ -29,7 +29,7 @@ import {
 import { apiRequest } from "@/lib/queryClient";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { insertNoteSchema, type Note, type Board, type Subject } from "@shared/schema";
+import { insertNoteSchema, type Note, type SupportedExam, type Subject } from "@shared/schema";
 import { z } from "zod";
 
 const formSchema = insertNoteSchema.extend({

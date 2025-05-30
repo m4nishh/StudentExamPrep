@@ -6,7 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Sidebar from "@/components/layout/sidebar";
 import Header from "@/components/layout/header";
 import Dashboard from "@/pages/dashboard";
-import SupportedExams from "@/pages/exams";
+import SupportedExams from "@/pages/supportedExams";
 import Subjects from "@/pages/subjects";
 import Materials from "@/pages/materials";
 import Notes from "@/pages/notes";

@@ -57,7 +57,7 @@ app.use((req, res, next) => {
   }
 
   // Use port 5000 as expected by the workflow system
-  const port = 5000;
+  const port = 30001;
   server.listen(port, () => {
     log(`Frontend admin dashboard serving on port ${port}`);
   });

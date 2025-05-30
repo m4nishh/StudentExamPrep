@@ -8,15 +8,12 @@ export const users = pgTable("users", {
   password: text("password").notNull(),
 });
 
-export const boards = pgTable("boards", {
+export const SupportedExam = pgTable("boards", {
   id: serial("id").primaryKey(),
-  name: text("name").notNull(),
-  description: text("description"),
-  type: text("type").notNull(), // 'secondary', 'competitive', 'professional'
-  isActive: boolean("is_active").notNull().default(true),
-  createdAt: timestamp("created_at").defaultNow(),
+  examName: text("examName").notNull(),
+  status: text("status").notNull().default("PENDING"), // ACTIVE, DEACTIVE, PENDING
+  thumbnail: text("thumbnail").notNull().default(""), // URL to the thumbnail image});
 });
-
 export const subjects = pgTable("subjects", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
@@ -71,10 +68,8 @@ export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
 });
 
-export const insertBoardSchema = createInsertSchema(boards).omit({
-  id: true,
-  createdAt: true,
-});
+export const insertExamSchema = createInsertSchema(SupportedExam).omit({
+  id: true});
 
 export const insertSubjectSchema = createInsertSchema(subjects).omit({
   id: true,
@@ -101,8 +96,8 @@ export const insertPyqPaperSchema = createInsertSchema(pyqPapers).omit({
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
 
-export type Board = typeof boards.$inferSelect;
-export type InsertBoard = z.infer<typeof insertBoardSchema>;
+export type SupportedExam = typeof SupportedExam.$inferSelect;
+export type InsertBoard = z.infer<typeof insertExamSchema>;
 
 export type Subject = typeof subjects.$inferSelect;
 export type InsertSubject = z.infer<typeof insertSubjectSchema>;

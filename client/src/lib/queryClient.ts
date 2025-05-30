@@ -8,9 +8,7 @@ async function throwIfResNotOk(res: Response) {
 }
 
 export async function apiRequest(
-  method: string,
-  url: string,
-  data?: unknown | undefined,
+method: string, url: string, data?: unknown | undefined, p0?: { headers: { "Content-Type": string; }; },
 ): Promise<Response> {
   const apiUrl = url.startsWith('http') ? url : `https://70af-160-191-74-252.ngrok-free.app${url}`;
   const res = await fetch(apiUrl, {
